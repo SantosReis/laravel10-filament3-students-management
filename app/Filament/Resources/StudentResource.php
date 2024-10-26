@@ -9,11 +9,14 @@ use App\Models\Student;
 use Filament\Forms\Get;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Exports\StudentsExport;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\StudentResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\StudentResource\RelationManagers;
@@ -73,6 +76,13 @@ class StudentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('export')
+                        ->label('Export Records')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->action(function (Collection $records) {
+                            return (new StudentsExport($records))
+                                ->download('students.xlsx');
+                        })
                 ]),
             ]);
     }
