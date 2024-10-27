@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Exports\StudentsExport;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\BulkAction;
@@ -107,6 +108,10 @@ class StudentResource extends Resource
                     }),
             ])
             ->actions([
+                Action::make('downloadPdf')
+                    ->url(function (Student $student) {
+                        return route('student.invoice.generate', $student);
+                    }),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
